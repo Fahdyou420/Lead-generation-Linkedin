@@ -3,6 +3,7 @@ from flask_cors import CORS
 from database.sheets_client import SheetsClient
 from config.settings import TARGET_SECTORS
 import os
+import sys
 
 app = Flask(__name__)
 CORS(app) # Enable cross-origin requests from the Google AI Studio dashboard
@@ -65,12 +66,53 @@ def api_dashboard():
     if sheet:
         records = sheet.get_all_records()
         recent = list(reversed(records))[:10]
+        
+    logs = getattr(sys.stdout, "logs", ["Logging not initialized"])
+    
+    # Try to determine state
+    state = "running"
+    # To check if scheduler is paused:
+    import main
+    if main.agent and main.agent.scheduler.state == 0: # 0 means stopped
+        state = "stopped"
+    elif main.agent and main.agent.scheduler.state == 2: # 2 means paused
+        state = "paused"
+        
     return jsonify({
         "status": "online",
+        "agent_state": state,
+        "logs": list(reversed(logs))[:50], # latest 50
         "stats": stats,
         "recent": recent,
         "active_sectors": TARGET_SECTORS
     })
+
+@app.route("/api/agent/pause", methods=["POST"])
+def agent_pause():
+    import main
+    if main.agent:
+        main.agent.scheduler.pause()
+        print("Agent PAUSED")
+    return jsonify({"status": "paused"})
+
+@app.route("/api/agent/resume", methods=["POST"])
+def agent_resume():
+    import main
+    if main.agent:
+        main.agent.scheduler.resume()
+        print("Agent RESUMED")
+    return jsonify({"status": "running"})
+
+@app.route("/api/agent/scrape_now", methods=["POST"])
+def agent_scrape_now():
+    import main
+    if main.agent:
+        print("Manual Scrape TRIGGERED")
+        # Run in thread so it doesn't block API
+        import threading
+        threading.Thread(target=main.agent.scrape_job).start()
+    return jsonify({"status": "scraping_started"})
+
 
 # Start Flask only if run directly (though main.py handles it)
 if __name__ == "__main__":

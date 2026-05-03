@@ -26,9 +26,18 @@ export default function App() {
     }
   };
 
+  const handleAgentControl = async (action: 'pause' | 'resume' | 'scrape_now') => {
+    try {
+      await fetch(`http://localhost:5000/api/agent/${action}`, { method: 'POST' });
+      fetchDashboard();
+    } catch (err) {
+      console.error("Failed to control agent", err);
+    }
+  };
+
   useEffect(() => {
     fetchDashboard();
-    const interval = setInterval(fetchDashboard, 10000); // refresh every 10s
+    const interval = setInterval(fetchDashboard, 3000); // refresh every 3s for real-time logs
     return () => clearInterval(interval);
   }, []);
 
@@ -176,9 +185,18 @@ export default function App() {
               <div className="p-4 border-bottom bg-gray-50 flex justify-between items-center border-b border-gray-200">
                 <h2 className="text-xs font-bold uppercase tracking-widest">Recent Activity Queue</h2>
                 <div className="flex gap-2">
-                  <span className="text-[10px] uppercase font-bold text-gray-400 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-[#E30613] animate-pulse rounded-full"></span> Live Updates
-                  </span>
+                  {data?.agent_state === 'paused' ? (
+                    <button onClick={() => handleAgentControl('resume')} className="text-[10px] font-bold uppercase bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded transition-colors">
+                      Resume Agent
+                    </button>
+                  ) : (
+                    <button onClick={() => handleAgentControl('pause')} className="text-[10px] font-bold uppercase bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition-colors">
+                      Pause Agent
+                    </button>
+                  )}
+                  <button onClick={() => handleAgentControl('scrape_now')} className="text-[10px] font-bold uppercase bg-[#E30613] hover:bg-red-700 text-white px-3 py-1 rounded transition-colors shadow-sm ml-2">
+                    Start Scrape Now
+                  </button>
                 </div>
               </div>
               <div className="flex-1 overflow-auto">
@@ -220,16 +238,32 @@ export default function App() {
               </div>
             </main>
 
-            <aside className="w-64 flex flex-col gap-6">
-              <div className="bg-[#1A1A1A] text-white p-5 rounded h-1/2 flex flex-col">
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-4">Active Sectors</h3>
+            <aside className="w-80 flex flex-col gap-6">
+              <div className="bg-white border border-gray-200 p-5 rounded flex flex-col h-1/3 shadow-sm">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#1A1A1A] mb-4">Active Sectors</h3>
                 <div className="space-y-3 overflow-y-auto flex-1 pr-2">
                    {(data?.active_sectors || []).map((sector: string, i: number) => (
                      <div key={i} className="flex items-center justify-between text-xs">
-                       <span className="flex items-center gap-2">
+                       <span className="flex items-center gap-2 text-gray-700">
                          <span className="w-1.5 h-1.5 bg-[#E30613] rounded-full"></span> {sector}
                        </span>
                      </div>
+                   ))}
+                </div>
+              </div>
+
+              <div className="bg-[#1A1A1A] border border-gray-800 text-green-400 p-4 rounded flex flex-col flex-1 shadow-sm overflow-hidden">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Real-Time Workflow</h3>
+                  <span className="flex items-center gap-1 text-[8px] text-gray-500 uppercase tracking-widest border border-gray-700 px-1 py-0.5 rounded">
+                     <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Streaming
+                  </span>
+                </div>
+                <div className="font-mono text-[10px] space-y-1 overflow-y-auto flex-1 pr-2 pb-2 leading-relaxed">
+                   {(data?.logs || []).length === 0 ? (
+                     <div className="text-gray-600 italic">No logs available yet...</div>
+                   ) : (data?.logs || []).map((log: string, i: number) => (
+                     <div key={i} className="whitespace-pre-wrap break-words">{log}</div>
                    ))}
                 </div>
               </div>

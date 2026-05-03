@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hunter Auto Dashboard</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Hunter Auto 1.0</h2>
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/leads">All Leads</a>
+            <a href="/settings">Settings</a>
+        </nav>
+    </div>
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<header>
+    <h1>Settings</h1>
+</header>
+
+{% if saved %}
+<div style="background: #E8F5E9; color: #2E7D32; padding: 10px; margin-bottom: 20px; border-radius: 4px;">
+    Settings saved successfully!
+</div>
+{% endif %}
+
+<div class="settings-card">
+    <form method="POST" action="/settings">
+        <h3>Target Sectors</h3>
+        <p class="text-gray">Select which Tunisian sectors to scrape on Google Maps & LinkedIn.</p>
+        
+        <div class="checkbox-grid">
+            {% set options = ['Banque', 'Industrie', 'Commerce', 'Santé', 'Éducation', 'Hôtellerie', 'Transport', 'Immobilier', 'IT', 'Construction'] %}
+            {% for opt in options %}
+            <label>
+                <input type="checkbox" name="sectors" value="{{ opt }}" {% if opt in sectors %}checked{% endif %}>
+                {{ opt }}
+            </label>
+            {% endfor %}
+        </div>
+        
+        <br>
+        <button type="submit" class="btn btn-primary">Save Settings</button>
+    </form>
+</div>
+{% endblock %}

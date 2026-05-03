@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<header>
+    <h1>All Leads</h1>
+    <input type="text" placeholder="Search leads..." class="search-box">
+</header>
+
+<table class="leads-table">
+    <thead>
+        <tr>
+            <th>Company</th>
+            <th>Contact</th>
+            <th>Info</th>
+            <th>Score</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lead in leads %}
+        <tr id="lead-{{ lead.ID }}">
+            <td>
+                <strong>{{ lead.Company }}</strong><br>
+                <small>{{ lead.Source }}</small>
+            </td>
+            <td>
+                {{ lead.Name or '?' }}<br>
+                <small>{{ lead.Title }}</small>
+            </td>
+            <td>
+                {% if lead.Phone %}<span class="badge">📞 {{ lead.Phone }}</span><br>{% endif %}
+                {% if lead.Email %}<span class="badge">✉️ {{ lead.Email }}</span>{% endif %}
+            </td>
+            <td>{{ lead.Score }}/10</td>
+            <td><span class="badge status-{{ lead.Status }}">{{ lead.Status }}</span></td>
+            <td class="actions">
+                <button hx-post="/leads/{{ lead.ID }}/approve" hx-target="#lead-{{ lead.ID }} .actions" class="btn-icon">✅</button>
+                <button hx-post="/leads/{{ lead.ID }}/skip" hx-target="#lead-{{ lead.ID }} .actions" class="btn-icon">❌</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

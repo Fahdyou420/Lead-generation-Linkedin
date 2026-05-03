@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  hunter_auto:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+      - playwright_sessions:/app/playwright_sessions
+    env_file:
+      - .env
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    command: >
+      bash -c "ollama serve & sleep 5 ; ollama pull qwen2.5:7b ; wait"
+
+volumes:
+  playwright_sessions:
+  ollama_data:

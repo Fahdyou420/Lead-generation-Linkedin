@@ -10,6 +10,8 @@ export default function App() {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [isActionPending, setIsActionPending] = useState<boolean>(false);
 
   const fetchDashboard = async () => {
     try {
@@ -28,10 +30,19 @@ export default function App() {
 
   const handleAgentControl = async (action: 'pause' | 'resume' | 'scrape_now') => {
     try {
-      await fetch(`http://localhost:5000/api/agent/${action}`, { method: 'POST' });
+      setActionError(null);
+      setIsActionPending(true);
+      const response = await fetch(`http://localhost:5000/api/agent/${action}`, { method: 'POST' });
+      if (!response.ok) {
+         throw new Error("Old backend");
+      }
       fetchDashboard();
     } catch (err) {
       console.error("Failed to control agent", err);
+      setActionError("Action failed! Your local Docker backend is outdated. Please re-download the ZIP and rebuild Docker to get the new capabilities.");
+      setTimeout(() => setActionError(null), 8000);
+    } finally {
+      setIsActionPending(false);
     }
   };
 
@@ -186,19 +197,24 @@ export default function App() {
                 <h2 className="text-xs font-bold uppercase tracking-widest">Recent Activity Queue</h2>
                 <div className="flex gap-2">
                   {data?.agent_state === 'paused' ? (
-                    <button onClick={() => handleAgentControl('resume')} className="text-[10px] font-bold uppercase bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded transition-colors">
-                      Resume Agent
+                    <button disabled={isActionPending} onClick={() => handleAgentControl('resume')} className="text-[10px] disabled:opacity-50 font-bold uppercase bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded transition-colors">
+                      {isActionPending ? '...' : 'Resume Agent'}
                     </button>
                   ) : (
-                    <button onClick={() => handleAgentControl('pause')} className="text-[10px] font-bold uppercase bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition-colors">
-                      Pause Agent
+                    <button disabled={isActionPending} onClick={() => handleAgentControl('pause')} className="text-[10px] disabled:opacity-50 font-bold uppercase bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition-colors">
+                      {isActionPending ? '...' : 'Pause Agent'}
                     </button>
                   )}
-                  <button onClick={() => handleAgentControl('scrape_now')} className="text-[10px] font-bold uppercase bg-[#E30613] hover:bg-red-700 text-white px-3 py-1 rounded transition-colors shadow-sm ml-2">
-                    Start Scrape Now
+                  <button disabled={isActionPending} onClick={() => handleAgentControl('scrape_now')} className="text-[10px] disabled:opacity-50 font-bold uppercase bg-[#E30613] hover:bg-red-700 text-white px-3 py-1 rounded transition-colors shadow-sm ml-2">
+                    {isActionPending ? '...' : 'Start Scrape Now'}
                   </button>
                 </div>
               </div>
+              {actionError && (
+                <div className="bg-red-50 border-b border-red-200 p-3 text-xs text-red-600 font-medium">
+                   ⚠️ {actionError}
+                </div>
+              )}
               <div className="flex-1 overflow-auto">
                 <table className="w-full text-left">
                   <thead className="text-[10px] uppercase tracking-wider font-bold text-gray-400 bg-gray-50/50 sticky top-0">

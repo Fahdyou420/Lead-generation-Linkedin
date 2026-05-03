@@ -10,20 +10,10 @@ services:
       - playwright_sessions:/app/playwright_sessions
     env_file:
       - .env
-    depends_on:
-      - ollama
+    # Use host network on Linux, or host.docker.internal on Windows/Mac to reach local Ollama
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
-
-  ollama:
-    image: ollama/ollama:latest
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_data:/root/.ollama
-    restart: unless-stopped
-    command: >
-      bash -c "ollama serve & sleep 5 ; ollama pull qwen2.5:7b ; wait"
 
 volumes:
   playwright_sessions:
-  ollama_data:

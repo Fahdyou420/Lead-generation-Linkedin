@@ -1,11 +1,27 @@
+import os
 from ai.ollama_client import OllamaClient
 
 class MessageGenerator:
     def __init__(self):
         self.ollama = OllamaClient()
+        self.skills_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'knowledge', 'skills.md')
+        
+    def _get_agent_skills(self):
+        if os.path.exists(self.skills_path):
+            with open(self.skills_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        return "No specific skills provided."
         
     def generate_messages(self, name, title, company):
+        skills = self._get_agent_skills()
+        
         prompt = f"""
+        AGENT KNOWLEDGE & SKILLS:
+        -------------------------
+        {skills}
+        -------------------------
+        
+        TASK:
         Generate a SHORT (max 3 sentences), friendly, non-salesy outreach message in French, Arabic, and English 
         for an Ooredoo B2B sales agent reaching out to a prospect.
         
@@ -15,8 +31,8 @@ class MessageGenerator:
         Company: {company}
         
         Rules:
+        - Read and apply the guidelines from the AGENT KNOWLEDGE & SKILLS above.
         - Ask ONLY for a 15-minute call or meeting to present our bespoke business telecom offers.
-        - Never mention price.
         - The tone should be highly professional yet conversational.
         - Sign as: Ooredoo Business Team.
         

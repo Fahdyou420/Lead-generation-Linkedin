@@ -71,15 +71,83 @@ export default function App() {
       </header>
 
       {error ? (
-        <div className="flex-1 flex flex-col items-center justify-center text-center p-10 mt-10">
-          <AlertTriangle className="w-16 h-16 text-[#E30613] mb-4 opacity-50" />
-          <h2 className="text-2xl font-bold tracking-tighter uppercase mb-2">System Offline</h2>
-          <p className="text-gray-500 max-w-md text-sm mb-6">
-            The dashboard cannot connect to your local Hunter Auto agent. Make sure you have started it with <code className="bg-gray-200 px-1 rounded">docker compose up -d</code> on your machine.
+        <div className="flex-1 flex flex-col items-center justify-start pt-10 px-4">
+          <AlertTriangle className="w-12 h-12 text-[#E30613] mb-4 opacity-50" />
+          <h2 className="text-xl font-bold tracking-tighter uppercase mb-2">System Offline</h2>
+          <p className="text-gray-500 max-w-md text-sm text-center mb-8">
+            The dashboard cannot connect to your local Hunter Auto agent. Make sure you have started it on your Windows machine with your downloaded Ollama models.
           </p>
-          <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
-            Waiting for connection on http://localhost:5000 ...
-          </p>
+          
+          <div className="w-full max-w-2xl bg-white border border-gray-200 rounded-lg shadow-sm text-left overflow-hidden">
+            <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+               <span className="text-xs font-bold uppercase tracking-widest text-gray-500">Local Docker Startup Guide</span>
+               <span className="flex gap-1">
+                 <span className="w-2 h-2 rounded-full bg-red-400"></span>
+                 <span className="w-2 h-2 rounded-full bg-yellow-400"></span>
+                 <span className="w-2 h-2 rounded-full bg-green-400"></span>
+               </span>
+            </div>
+            <div className="p-6 space-y-6 text-sm text-gray-700">
+              <div>
+                 <p className="font-semibold text-black mb-1">1. Download your code</p>
+                 <p className="text-gray-500 text-xs">Click the gear icon (top right) in AI Studio and <span className="font-bold text-gray-700">Download ZIP</span>, then extract it to a folder.</p>
+              </div>
+              <div>
+                 <p className="font-semibold text-black mb-1">2. Fill in your API keys</p>
+                 <p className="text-gray-500 text-xs">Inside the extracted folder, rename <code className="bg-gray-100 text-[#E30613] px-1 rounded">.env.example</code> to <code className="bg-gray-100 text-[#E30613] px-1 rounded">.env</code> and fill in your Gmail App Password, Google Sheets ID, and Hunter.io API key.</p>
+              </div>
+              <div>
+                 <p className="font-semibold text-black mb-1">3. Authenticate LinkedIn</p>
+                 <p className="text-gray-500 text-xs mb-2">Open Command Prompt (`cmd`) in your folder and run this to save your session so the bot doesn't get blocked:</p>
+                 <div className="bg-[#1A1A1A] text-gray-300 p-3 rounded font-mono text-[10px] overflow-x-auto whitespace-pre">
+                    <span className="text-blue-400">pip</span> install playwright<br/>
+                    <span className="text-blue-400">playwright</span> install chromium<br/>
+                    <span className="text-blue-400">python</span> -c "from playwright.sync_api import sync_playwright; p=sync_playwright().start(); browser=p.chromium.launch(headless=False); context=browser.new_context(); page=context.new_page(); page.goto('https://www.linkedin.com/login'); print('\n&gt;&gt;&gt; LOGIN IN BROWSER NOW (60s) &lt;&lt;&lt;\n'); page.wait_for_timeout(60000); context.storage_state(path='playwright_sessions/state.json'); browser.close(); p.stop()"
+                 </div>
+              </div>
+              <div>
+                 <p className="font-semibold text-black mb-1">4. Start the Docker containers</p>
+                 <div className="bg-[#1A1A1A] text-green-400 p-3 rounded font-mono text-xs">
+                    $ docker compose up -d --build
+                 </div>
+                 <p className="text-gray-500 text-xs mt-2 italic flex items-center gap-1">
+                   <RefreshCw className="w-3 h-3 animate-spin"/> Once running, this dashboard will automatically come online!
+                 </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full max-w-2xl bg-white border border-gray-200 rounded-lg shadow-sm text-left overflow-hidden mt-6 mb-10">
+            <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 flex justify-between items-center">
+               <span className="text-xs font-bold uppercase tracking-widest text-[#E30613]">FAQ & Customization</span>
+               <span className="bg-green-100 text-green-700 font-bold text-[10px] px-2 py-0.5 rounded uppercase font-mono border border-green-200">Agent Setup</span>
+            </div>
+            <div className="p-6 space-y-4 text-sm text-gray-700">
+               <div>
+                 <p className="font-semibold text-black mb-1">How do I add more context/data for the AI to pitch better?</p>
+                 <p className="text-gray-500 text-xs mb-3">You can dynamically update the AI's "brain" and knowledge base at runtime using the newly added Agent Skills file:</p>
+                 
+                 <div className="border border-indigo-100 bg-indigo-50/50 rounded-lg p-4 mb-3">
+                   <div className="font-mono text-xs font-bold text-indigo-700 mb-2 flex items-center gap-2">
+                     <span className="bg-indigo-100 px-1 rounded border border-indigo-200">📄 hunter_auto/knowledge/skills.md</span>
+                   </div>
+                   <p className="text-[11px] text-gray-600 mb-2">
+                     This markdown file acts as the AI's core instructions. The system reads it automatically before every interaction. You can paste:
+                   </p>
+                   <ul className="text-[11px] text-gray-600 space-y-1 list-disc pl-4">
+                     <li>Your exact Ooredoo B2B pricing guidelines or constraints.</li>
+                     <li>Your Ideal Customer Profile (ICP) for lead scoring.</li>
+                     <li>Your preferred tone of voice or cultural business etiquette.</li>
+                     <li>Key value propositions (e.g., Fibre Optique Pro).</li>
+                   </ul>
+                 </div>
+                 
+                 <p className="text-green-700 text-xs font-medium bg-green-50 px-2 py-1.5 rounded inline-block border border-green-100">
+                   ✨ Hot Reloading Active: You do NOT need to restart Docker. Just edit the `skills.md` file and save it on your machine!
+                 </p>
+               </div>
+            </div>
+          </div>
         </div>
       ) : (
         <>

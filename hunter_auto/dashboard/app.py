@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
 from database.sheets_client import SheetsClient
 from config.settings import TARGET_SECTORS
 import os
 
 app = Flask(__name__)
+CORS(app) # Enable cross-origin requests from the Google AI Studio dashboard
 db = SheetsClient()
 
 @app.route("/")
@@ -55,6 +57,21 @@ def api_stats():
     <div>Total Leads</div>
     """
     
+@app.route("/api/dashboard")
+def api_dashboard():
+    stats = db.get_stats()
+    sheet = db.get_leads_sheet()
+    recent = []
+    if sheet:
+        records = sheet.get_all_records()
+        recent = list(reversed(records))[:10]
+    return jsonify({
+        "status": "online",
+        "stats": stats,
+        "recent": recent,
+        "active_sectors": TARGET_SECTORS
+    })
+
 # Start Flask only if run directly (though main.py handles it)
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

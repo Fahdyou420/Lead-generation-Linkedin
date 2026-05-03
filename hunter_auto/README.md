@@ -15,7 +15,9 @@ Since you already have Docker and Ollama running on your Windows machine, the se
 5. Fill in the rest of the file:
    - `GOOGLE_SHEETS_ID`: Create a Google Sheet. Look at the URL: `https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit`. Copy that ID.
    - `GMAIL_ADDRESS` / `GMAIL_APP_PASSWORD`: For email. You must create an App Password in your Google Account security settings (2FA must be on).
-   - `TELEGRAM_BOT_TOKEN` / `CHAT_ID`: Create a bot via `@BotFather` on Telegram. Message your bot, then visit `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates` to find your `chat_id`.
+   - `TELEGRAM_BOT_TOKEN`: Create a bot via `@BotFather` on Telegram.
+   - `TELEGRAM_CHAT_ID`: `2037668278` (Already extracted from your JSON!)
+   - `HUNTER_IO_API_KEY`: Go to [Hunter.io](https://hunter.io/), sign up for a free account, click your profile in the top right -> **API**, and copy your API key (gives you 25 free email searches/month).
 
 ## Step 3: Google Sheets API
 1. Go to [Google Cloud Console](https://console.cloud.google.com/).

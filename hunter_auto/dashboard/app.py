@@ -80,6 +80,7 @@ def api_dashboard():
         
     return jsonify({
         "status": "online",
+        "version": "2.0",
         "agent_state": state,
         "logs": list(reversed(logs))[:50], # latest 50
         "stats": stats,

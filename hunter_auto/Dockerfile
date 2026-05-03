@@ -1,13 +1,7 @@
-FROM python:3.11-slim-bookworm
+FROM mcr.microsoft.com/playwright/python:v1.42.0-jammy
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    wget \
-    gnupg \
-    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -15,14 +9,10 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install Playwright browser
-RUN playwright install chromium
-RUN playwright install-deps chromium
-
 # Copy application files
 COPY . .
 
 EXPOSE 5000
 
-# Start Gunicorn server with app and also run the agent schedule
+# Start server
 CMD ["python", "main.py"]

@@ -1,6 +1,8 @@
 {
-  "name": "",
-  "description": "",
+  "name": "Hunter Auto OS",
+  "description": "Autonomous lead generation, scraping, and campaign orchestrator for B2B outreach sync.",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

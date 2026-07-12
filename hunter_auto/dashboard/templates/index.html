@@ -3,8 +3,9 @@
 <header>
     <h1>Dashboard</h1>
     <div>
-        <button class="btn btn-primary">Start Scraping</button>
-        <button class="btn btn-secondary">Pause</button>
+        <button class="btn btn-primary" hx-post="/api/agent/scrape_now" hx-swap="none" onclick="alert('Scrape triggered successfully!')">Start Scraping</button>
+        <button class="btn btn-warning" hx-post="/api/agent/pause" hx-swap="none" onclick="alert('Agent scheduler paused!')">Pause</button>
+        <button class="btn btn-success" hx-post="/api/agent/resume" hx-swap="none" onclick="alert('Agent scheduler resumed!')">Resume</button>
     </div>
 </header>
 
@@ -24,6 +25,34 @@
     <div class="stat-card">
         <div class="stat-value" style="color: #E30613;">{{ stats.meetings }}</div>
         <div>Meetings Booked</div>
+    </div>
+</div>
+
+<div class="stat-card" style="margin-top: 20px; background-color: #f8f9fa; border-left: 5px solid #007bff; padding: 20px;" hx-get="/" hx-trigger="every 5s" hx-select=".status-container" hx-swap="outerHTML">
+    <div class="status-container">
+        <h3>Real-Time Scraping Status</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+            <div>
+                <strong>Engine State:</strong> 
+                {% if status.is_scraping %}
+                    <span class="badge" style="background-color: #28a745; color: white;">Scraping Active</span>
+                {% else %}
+                    <span class="badge" style="background-color: #6c757d; color: white;">Idle</span>
+                {% endif %}
+            </div>
+            <div>
+                <strong>Current Activity:</strong> 
+                <span style="color: #495057;">{{ status.current_activity or 'Idle' }}</span>
+            </div>
+            <div>
+                <strong>Last Found:</strong> 
+                <span style="color: #495057;">{{ status.last_scraped_company or '-' }}</span>
+            </div>
+            <div>
+                <strong>Last Source:</strong> 
+                <span class="badge" style="background-color: #17a2b8; color: white;">{{ status.last_scraped_source or '-' }}</span>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -18,15 +18,44 @@
         <div class="checkbox-grid">
             {% set options = ['Banque', 'Industrie', 'Commerce', 'Santé', 'Éducation', 'Hôtellerie', 'Transport', 'Immobilier', 'IT', 'Construction'] %}
             {% for opt in options %}
-            <label>
+            <label style="display: flex; align-items: center; gap: 8px;">
                 <input type="checkbox" name="sectors" value="{{ opt }}" {% if opt in sectors %}checked{% endif %}>
                 {{ opt }}
             </label>
             {% endfor %}
         </div>
         
+        <div style="margin-top: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Custom Target Sectors (Comma separated, e.g. Assurances, Café, Textile)</label>
+            <input type="text" name="custom_sectors" placeholder="e.g. Assurances, Café" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            <p style="font-size: 0.85em; color: #6c757d; margin-top: 2px;">Used if no checkboxes above are selected.</p>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Target Cities / Zones (Comma separated)</label>
+            <input type="text" name="cities" value="{{ cities }}" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            <p style="font-size: 0.85em; color: #6c757d; margin-top: 2px;">E.g., Tunis, Sousse, Sfax, Ariana, Gabes</p>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Target Job Titles on LinkedIn (Comma separated)</label>
+            <input type="text" name="titles" value="{{ titles }}" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            <p style="font-size: 0.85em; color: #6c757d; margin-top: 2px;">E.g., CEO, Directeur Général, Fondateur, Gérant</p>
+        </div>
+
+        <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Scrape Interval (Hours)</label>
+                <input type="number" name="scrape_interval" value="{{ scrape_interval }}" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div>
+                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Outreach Daily Limit (leads)</label>
+                <input type="number" name="outreach_limit" value="{{ outreach_limit }}" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+        </div>
+        
         <br>
-        <button type="submit" class="btn btn-primary">Save Settings</button>
+        <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">Save Settings</button>
     </form>
 </div>
 {% endblock %}

@@ -24,6 +24,38 @@ class SheetsClient:
             print(f"Error accessing Google Sheets: {e}")
             return None
 
+    def _get_records_safe(self, sheet, expected_headers):
+        if not sheet:
+            return []
+        try:
+            values = sheet.get_all_values()
+            if not values:
+                sheet.append_row(expected_headers)
+                return []
+            
+            headers = values[0]
+            # Check if headers are empty, contain empty strings, have duplicates, or mismatch significantly
+            non_empty_headers = [h for h in headers if h.strip()]
+            if len(set(non_empty_headers)) != len(non_empty_headers) or len(non_empty_headers) == 0:
+                # Update headers in row 1
+                for col_idx, val in enumerate(expected_headers, 1):
+                    sheet.update_cell(1, col_idx, val)
+                headers = expected_headers
+                # Re-fetch values to be accurate
+                values = sheet.get_all_values()
+            
+            records = []
+            for row in values[1:]:
+                record = {}
+                for idx, header in enumerate(headers):
+                    if header:
+                        record[header] = row[idx] if idx < len(row) else ""
+                records.append(record)
+            return records
+        except Exception as e:
+            print(f"Error reading sheets records safely: {e}")
+            return []
+
     def get_leads_sheet(self):
         headers = ["ID", "Company", "Name", "Title", "Phone", "Email", "LinkedIn URL", "Source", "Score", "Status", "Message Sent", "Sent At", "Notes"]
         return self._get_or_create_sheet("Hunter_Auto_Leads", headers)
@@ -42,7 +74,8 @@ class SheetsClient:
         sheet = self.get_leads_sheet()
         if not sheet: return False
         
-        records = sheet.get_all_records()
+        headers = ["ID", "Company", "Name", "Title", "Phone", "Email", "LinkedIn URL", "Source", "Score", "Status", "Message Sent", "Sent At", "Notes"]
+        records = self._get_records_safe(sheet, headers)
         for r in records:
             if linkedin_url and r.get("LinkedIn URL") == linkedin_url:
                 return True
@@ -79,10 +112,17 @@ class SheetsClient:
         self.log_action("New Lead Added", lead_id=row_id, company=lead_data.get("Company"), status="pending")
         return True
 
+    def get_all_leads_records(self):
+        sheet = self.get_leads_sheet()
+        if not sheet: return []
+        headers = ["ID", "Company", "Name", "Title", "Phone", "Email", "LinkedIn URL", "Source", "Score", "Status", "Message Sent", "Sent At", "Notes"]
+        return self._get_records_safe(sheet, headers)
+
     def get_pending_leads(self):
         sheet = self.get_leads_sheet()
         if not sheet: return []
-        records = sheet.get_all_records()
+        headers = ["ID", "Company", "Name", "Title", "Phone", "Email", "LinkedIn URL", "Source", "Score", "Status", "Message Sent", "Sent At", "Notes"]
+        records = self._get_records_safe(sheet, headers)
         return [r for r in records if r.get("Status") == "pending"]
 
     def update_lead_status(self, lead_id, status, message_sent="", notes="", sent_at=""):
@@ -107,7 +147,8 @@ class SheetsClient:
         sheet = self.get_leads_sheet()
         if not sheet: return {"total": 0, "sent_today": 0, "meetings": 0, "response_rate": 0}
         
-        records = sheet.get_all_records()
+        headers = ["ID", "Company", "Name", "Title", "Phone", "Email", "LinkedIn URL", "Source", "Score", "Status", "Message Sent", "Sent At", "Notes"]
+        records = self._get_records_safe(sheet, headers)
         total = len(records)
         today = datetime.datetime.now().strftime("%Y-%m-%d")
         

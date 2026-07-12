@@ -13,19 +13,13 @@ db = SheetsClient()
 def index():
     stats = db.get_stats()
     # Get last 10 leads
-    sheet = db.get_leads_sheet()
-    recent = []
-    if sheet:
-        records = sheet.get_all_records()
-        recent = list(reversed(records))[:10]
+    records = db.get_all_leads_records()
+    recent = list(reversed(records))[:10]
     return render_template("index.html", stats=stats, recent=recent)
 
 @app.route("/leads")
 def leads():
-    sheet = db.get_leads_sheet()
-    all_leads = []
-    if sheet:
-        all_leads = sheet.get_all_records()
+    all_leads = db.get_all_leads_records()
     return render_template("leads.html", leads=reversed(all_leads))
 
 @app.route("/leads/<int:lead_id>/approve", methods=["POST"])

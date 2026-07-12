@@ -1,9 +1,9 @@
 import os
-from ai.ollama_client import OllamaClient
+from ai.ai_client import AIClient
 
 class MessageGenerator:
     def __init__(self):
-        self.ollama = OllamaClient()
+        self.ai = AIClient()
         self.skills_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'knowledge', 'skills.md')
         
     def _get_agent_skills(self):
@@ -45,7 +45,7 @@ class MessageGenerator:
         }}
         """
         
-        result = self.ollama.generate_json(prompt)
+        result = self.ai.generate_json(prompt)
         
         default_fr = f"Bonjour {name}, je vous contacte au nom d'Ooredoo Business. Nous proposons des offres B2B sur-mesure pour les entreprises tunisiennes comme {company}. Seriez-vous disponible pour un court appel pour vous les présenter ? Bien à vous, Ooredoo Business Team."
         

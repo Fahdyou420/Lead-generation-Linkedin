@@ -1,9 +1,9 @@
 import os
-from ai.ollama_client import OllamaClient
+from ai.ai_client import AIClient
 
 class LeadScorer:
     def __init__(self):
-        self.ollama = OllamaClient()
+        self.ai = AIClient()
         self.skills_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'knowledge', 'skills.md')
         
     def _get_agent_skills(self):
@@ -34,7 +34,7 @@ class LeadScorer:
         }}
         """
         
-        result = self.ollama.generate_json(prompt)
+        result = self.ai.generate_json(prompt)
         score = result.get("score", 5)
         reason = result.get("reason", "Standard business profile")
         

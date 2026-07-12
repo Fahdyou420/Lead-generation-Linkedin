@@ -36,7 +36,12 @@ def start_agent():
     agent.start()
 
 if __name__ == "__main__":
-    print("Starting Hunter Auto 1.0...")
+    print("Starting Hunter Auto PRO OS...")
+    print("---------------------------------")
+    print("Intelligence: Nous Research Portal + Gemini Active")
+    print("Orchestration: Autonomous Scheduler Enabled")
+    print("Knowledge: Obsidian Skills Sync Active")
+    print("---------------------------------")
     
     # Run Agent in background thread so Flask doesn't block it
     agent_thread = threading.Thread(target=start_agent)

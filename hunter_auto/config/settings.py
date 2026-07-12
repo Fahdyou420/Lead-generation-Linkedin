@@ -3,8 +3,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5:7b")
+NOUS_API_KEY = os.getenv("NOUS_API_KEY")
+NOUS_MODEL = os.getenv("NOUS_MODEL", "stepfun/step-3.7-flash:free")
+NOUS_API_BASE = os.getenv("NOUS_API_BASE", "https://api.nousresearch.com/v1")
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
 
 GOOGLE_SHEETS_ID = os.getenv("GOOGLE_SHEETS_ID")
 GOOGLE_CREDENTIALS_PATH = os.getenv("GOOGLE_CREDENTIALS_PATH", "./config/credentials.json")

@@ -67,15 +67,15 @@ export default function App() {
       <header className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <div className="bg-[#E30613] text-white p-2 font-bold text-xl tracking-tighter rounded">
-            H1.0
+            PRO
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight uppercase">
-              Hunter Auto <span className="text-[#E30613]">Pro</span>
+              Hunter Auto <span className="text-[#E30613]">OS</span>
             </h1>
             <p className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">
-              Autonomous Ooredoo B2B Agent{" "}
-              {data?.version === "2.0" ? "• V2.0 Active" : "• Tunisia"}
+              Autonomous Pro Stack{" "}
+              {data?.version === "2.0" ? "• Active" : "• Loading"}
             </p>
           </div>
         </div>
@@ -436,24 +436,39 @@ export default function App() {
             </main>
 
             <aside className="w-80 flex flex-col gap-6">
-              <div className="bg-white border border-gray-200 p-5 rounded flex flex-col h-1/3 shadow-sm">
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#1A1A1A] mb-4">
-                  Active Sectors
-                </h3>
-                <div className="space-y-3 overflow-y-auto flex-1 pr-2">
-                  {(data?.active_sectors || []).map(
-                    (sector: string, i: number) => (
-                      <div
-                        key={i}
-                        className="flex items-center justify-between text-xs"
-                      >
-                        <span className="flex items-center gap-2 text-gray-700">
-                          <span className="w-1.5 h-1.5 bg-[#E30613] rounded-full"></span>{" "}
-                          {sector}
-                        </span>
-                      </div>
-                    ),
-                  )}
+              <div className="bg-white border border-gray-200 p-5 rounded flex flex-col h-[200px] shadow-sm">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#1A1A1A]">
+                    Pro Stack Components
+                  </h3>
+                  <span className="text-[8px] bg-indigo-100 text-indigo-700 font-bold px-1.5 py-0.5 rounded">
+                    AUTO
+                  </span>
+                </div>
+                <div className="space-y-2 overflow-y-auto flex-1 text-[11px]">
+                  <div className="flex items-center justify-between p-2 bg-gray-50 rounded border border-gray-100 italic text-gray-500">
+                    <span>Nous Portal (AI)</span>
+                    <span className="text-green-500 font-bold">READY</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-gray-50 rounded border border-gray-100">
+                    <a
+                      href="https://github.com/nousresearch/hermes-agent"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-indigo-600 hover:underline"
+                    >
+                      Hermes Agent (CLI)
+                    </a>
+                    <span className="text-green-500 font-bold">ONLINE</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-gray-50 rounded border border-gray-100">
+                    <span className="font-bold text-gray-700">
+                      Skills (Obsidian)
+                    </span>
+                    <span className="text-blue-500 font-bold italic">
+                      SYNCING
+                    </span>
+                  </div>
                 </div>
               </div>
 

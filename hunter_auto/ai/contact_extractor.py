@@ -1,8 +1,8 @@
-from ai.ollama_client import OllamaClient
+from ai.ai_client import AIClient
 
 class ContactExtractor:
     def __init__(self):
-        self.ollama = OllamaClient()
+        self.ai = AIClient()
         
     def extract_from_html(self, raw_text):
         if not raw_text or len(raw_text) < 10:
@@ -24,7 +24,7 @@ class ContactExtractor:
         If no contacts are found, return {{"contacts": []}}
         """
         
-        result = self.ollama.generate_json(prompt)
+        result = self.ai.generate_json(prompt)
         contacts = result.get("contacts", [])
         
         if not isinstance(contacts, list):

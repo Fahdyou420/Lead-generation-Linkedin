@@ -176,12 +176,12 @@ def api_chat():
             except:
                 pass
                 
-        prompt = "You are Hermes, the autonomous Tunisian lead-generation and sales agent. You help the user manage the system, brainstorm strategies, and customize their targeting.\n\n"
+        prompt = "You are Hunter, the autonomous Tunisian lead-generation and sales agent. You help the user manage the system, brainstorm strategies, and customize their targeting.\n\n"
         prompt += "Here is the conversation history:\n"
         for msg in history[-10:]: # Context limit
             prompt += f"{msg['role'].upper()}: {msg['content']}\n"
         prompt += f"USER: {user_message}\n"
-        prompt += "HERMES:"
+        prompt += "HUNTER:"
         
         from ai.ai_client import AIClient
         ai = AIClient()
